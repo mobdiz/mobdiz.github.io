@@ -1,0 +1,10 @@
+{
+  "name": "triangles",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "run": "npx http-server ./"
+  },
+  "author": "",
+  "license": "ISC"
+}

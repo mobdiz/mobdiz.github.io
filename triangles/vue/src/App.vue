@@ -1,47 +1,108 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <el-container class="layout">
+    <el-aside class="aside" :width="asideWidthInPx">
+      <el-scrollbar>
+        <div class="aside-title">
+          <h2>Settings</h2>
+        </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+        <DotsSettings />
+      </el-scrollbar>
+    </el-aside>
 
-  <main>
-    <TheWelcome />
-  </main>
+    <el-container class="content">
+      <el-header class="header">
+        <h1>Dots: {{ dots.length }}</h1>
+      </el-header>
+
+      <el-main class="main">
+        <el-scrollbar>
+          <div class="main-content">
+            <PlaceForDrawing />
+          </div>
+        </el-scrollbar>
+      </el-main>
+
+      <el-footer class="footer">
+        &copy; 2021
+      </el-footer>
+    </el-container>
+  </el-container>
 </template>
 
+<script lang="ts">
+import {defineComponent} from "vue";
+import {useStore} from "@nanostores/vue";
+
+import {$dots} from "../../nanostores";
+
+import PlaceForDrawing from "@/components/PlaceForDrawing.vue";
+import DotsSettings from "@/components/DotsSettings.vue";
+
+export default defineComponent({
+  components: {
+    DotsSettings,
+    PlaceForDrawing
+  },
+
+  setup() {
+    const dots = useStore($dots)
+    const asideWidth = 300
+
+    const asideWidthInPx = `${asideWidth}px`
+
+    return {
+      dots,
+      asideWidthInPx
+    }
+  }
+})
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+.layout {
+  height: 100vh;
+
+  --box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.aside {
+  background-color: var(--el-color-primary-dark-2);
+  color: var(--el-color-white);
+  padding: 1rem;
+  box-shadow: var(--box-shadow);
+  position: relative;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.header {
+  background-color: var(--el-color-primary-light-7);
+  color: var(--el-color-primary-dark-2);
+  padding: 1rem;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  align-items: center;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.footer {
+  background-color: var(--el-color-primary-light-7);
+  color: var(--el-color-primary-dark-2);
+  padding: 1rem;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  align-items: center;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.main {
+  padding: 0;
+}
+
+.main-content {
+  display: grid;
+  height: calc(100vh - 120px);
+}
+
+h1 {
+  margin: 0;
+  font: inherit;
 }
 </style>

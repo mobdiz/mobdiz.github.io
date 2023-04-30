@@ -56,176 +56,187 @@
   </style>
 </head>
 <body>
-<h1>Dots <span class="dots-counter"></span></h1>
 
-<div class="main"></div>
+<div id="app">
+  <div>
+    <h1>Dots ({{ dots.count }})</h1>
 
-<button class="btn js-draw-new-dot">Start/Pause</button>
+    <div class="main">
+      <div v-for="dot in mainDots" :key="for"></div>
+    </div>
+
+    <button class="btn js-draw-new-dot">Start/Pause</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/petite-vue"></script>
 
 <script>
-  const mainEl = document.querySelector('.main')
-  const drawNewDotBtn = document.querySelector('.js-draw-new-dot')
-  const dotsCounterEl = document.querySelector('.dots-counter')
+  const App = PetiteVue.createApp().mount('#app')
 
-  const dots = {
-    a: [40, 70],
-    b: [400, 150],
-    c: [274, 400],
-  }
-
-  const dotsInts = new Map([
-    [1, dots.a],
-    [2, dots.a],
-    [3, dots.b],
-    [4, dots.b],
-    [5, dots.c],
-    [6, dots.c],
-  ])
-
-  const newDots = []
-
-  let lastDot = dots.c;
-
-  let drawNewDotInterval = null
-
-  let isDrawing = false
-
-  const vertices = Object.values(dots)
-
-  function drawDot(x, y, name) {
-    const dot = document.createElement('div')
-
-    dot.classList.add('dot')
-
-    if (name) {
-      dot.classList.add(`dot-${name}`)
-      dot.dataset.name = name
-    }
-
-    dot.style.left = x + 'px'
-    dot.style.top = y + 'px'
-
-    mainEl.appendChild(dot)
-  }
-
-  function getRandomInt(min = 1, max = 6) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function drawLineBetweenDots(dot1, dot2) {
-    const line = document.createElement('div')
-    const dot1El = document.querySelector(`.dot-${dot1}`)
-    const dot2El = document.querySelector(`.dot-${dot2}`)
-
-    line.classList.add('line')
-
-    line.style.width = Math.sqrt((dot1El.offsetLeft - dot2El.offsetLeft) ** 2 + (dot1El.offsetTop - dot2El.offsetTop) ** 2) + 'px'
-    line.style.transform = `rotate(${Math.atan2(dot2El.offsetTop - dot1El.offsetTop, dot2El.offsetLeft - dot1El.offsetLeft)}rad)`
-    line.style.left = dot1El.offsetLeft + 'px'
-    line.style.top = dot1El.offsetTop + 'px'
-
-    mainEl.appendChild(line)
-  }
-
-  function isPointInside(point) {
-    let inside = false;
-
-    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-      const xi = vertices[i][0], yi = vertices[i][1];
-      const xj = vertices[j][0], yj = vertices[j][1];
-
-      const intersect = ((yi > point[1]) !== (yj > point[1])) &&
-        (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
-
-      if (intersect) {
-        inside = !inside
-      }
-    }
-
-    return inside;
-  }
-
-  function getRandomPointInside() {
-    const xMin = Math.min(...vertices.map(v => v[0]));
-    const yMin = Math.min(...vertices.map(v => v[1]));
-    const xMax = Math.max(...vertices.map(v => v[0]));
-    const yMax = Math.max(...vertices.map(v => v[1]));
-
-    while (true) {
-      const x = Math.random() * (xMax - xMin) + xMin;
-      const y = Math.random() * (yMax - yMin) + yMin;
-
-      const point = [x, y];
-
-      if (isPointInside(point)) {
-        return point;
-      }
-    }
-  }
-
-  function drawNewDot() {
-    if (newDots.length === 0) {
-      const point = getRandomPointInside();
-
-      newDots.push(point);
-
-      lastDot = point;
-
-      drawDot(point[0], point[1])
-    } else {
-      const randomInt = getRandomInt();
-
-      const dot = dotsInts.get(randomInt);
-
-      // Вычислить точку между последней точкой и выбранной точкой
-      const x = (lastDot[0] + dot[0]) / 2;
-      const y = (lastDot[1] + dot[1]) / 2;
-
-      const newDot = [x, y];
-
-      newDots.push(newDot);
-
-      dotsCounterEl.innerHTML = String(newDots.length)
-
-      lastDot = newDot;
-
-      drawDot(x, y);
-    }
-  }
-
-  function handleDrawNewDotBtn(event) {
-    event.preventDefault()
-
-    if (!isDrawing) {
-      isDrawing = true
-
-      drawNewDotInterval = setInterval(() => {
-        drawNewDot()
-      }, 1000 / 60)
-    } else {
-      isDrawing = false
-
-      clearInterval(drawNewDotInterval)
-    }
-  }
-
-  const dotsKeys = Object.keys(dots)
-
-  dotsKeys.forEach((key) => {
-    drawDot(dots[key][0], dots[key][1], key)
-  })
-
-  dotsKeys.forEach((key, i) => {
-    if (i === 0) {
-      drawLineBetweenDots(key, dotsKeys[dotsKeys.length - 1])
-    } else {
-      drawLineBetweenDots(key, dotsKeys[i - 1])
-    }
-  })
-
-  document.addEventListener('DOMContentLoaded', () => {
-    drawNewDotBtn.addEventListener('click', handleDrawNewDotBtn)
-  })
+  // const mainEl = document.querySelector('.main')
+  // const drawNewDotBtn = document.querySelector('.js-draw-new-dot')
+  // const dotsCounterEl = document.querySelector('.dots-counter')
+  //
+  // const dots = {
+  //   a: [40, 70],
+  //   b: [400, 150],
+  //   c: [274, 400],
+  // }
+  //
+  // const dotsInts = new Map([
+  //   [1, dots.a],
+  //   [2, dots.a],
+  //   [3, dots.b],
+  //   [4, dots.b],
+  //   [5, dots.c],
+  //   [6, dots.c],
+  // ])
+  //
+  // const newDots = []
+  //
+  // let lastDot = dots.c;
+  //
+  // let drawNewDotInterval = null
+  //
+  // let isDrawing = false
+  //
+  // const vertices = Object.values(dots)
+  //
+  // function drawDot(x, y, name) {
+  //   const dot = document.createElement('div')
+  //
+  //   dot.classList.add('dot')
+  //
+  //   if (name) {
+  //     dot.classList.add(`dot-${name}`)
+  //     dot.dataset.name = name
+  //   }
+  //
+  //   dot.style.left = x + 'px'
+  //   dot.style.top = y + 'px'
+  //
+  //   mainEl.appendChild(dot)
+  // }
+  //
+  // function getRandomInt(min = 1, max = 6) {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
+  //
+  // function drawLineBetweenDots(dot1, dot2) {
+  //   const line = document.createElement('div')
+  //   const dot1El = document.querySelector(`.dot-${dot1}`)
+  //   const dot2El = document.querySelector(`.dot-${dot2}`)
+  //
+  //   line.classList.add('line')
+  //
+  //   line.style.width = Math.sqrt((dot1El.offsetLeft - dot2El.offsetLeft) ** 2 + (dot1El.offsetTop - dot2El.offsetTop) ** 2) + 'px'
+  //   line.style.transform = `rotate(${Math.atan2(dot2El.offsetTop - dot1El.offsetTop, dot2El.offsetLeft - dot1El.offsetLeft)}rad)`
+  //   line.style.left = dot1El.offsetLeft + 'px'
+  //   line.style.top = dot1El.offsetTop + 'px'
+  //
+  //   mainEl.appendChild(line)
+  // }
+  //
+  // function isPointInside(point) {
+  //   let inside = false;
+  //
+  //   for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+  //     const xi = vertices[i][0], yi = vertices[i][1];
+  //     const xj = vertices[j][0], yj = vertices[j][1];
+  //
+  //     const intersect = ((yi > point[1]) !== (yj > point[1])) &&
+  //       (point[0] < (xj - xi) * (point[1] - yi) / (yj - yi) + xi);
+  //
+  //     if (intersect) {
+  //       inside = !inside
+  //     }
+  //   }
+  //
+  //   return inside;
+  // }
+  //
+  // function getRandomPointInside() {
+  //   const xMin = Math.min(...vertices.map(v => v[0]));
+  //   const yMin = Math.min(...vertices.map(v => v[1]));
+  //   const xMax = Math.max(...vertices.map(v => v[0]));
+  //   const yMax = Math.max(...vertices.map(v => v[1]));
+  //
+  //   while (true) {
+  //     const x = Math.random() * (xMax - xMin) + xMin;
+  //     const y = Math.random() * (yMax - yMin) + yMin;
+  //
+  //     const point = [x, y];
+  //
+  //     if (isPointInside(point)) {
+  //       return point;
+  //     }
+  //   }
+  // }
+  //
+  // function drawNewDot() {
+  //   if (newDots.length === 0) {
+  //     const point = getRandomPointInside();
+  //
+  //     newDots.push(point);
+  //
+  //     lastDot = point;
+  //
+  //     drawDot(point[0], point[1])
+  //   } else {
+  //     const randomInt = getRandomInt();
+  //
+  //     const dot = dotsInts.get(randomInt);
+  //
+  //     // Вычислить точку между последней точкой и выбранной точкой
+  //     const x = (lastDot[0] + dot[0]) / 2;
+  //     const y = (lastDot[1] + dot[1]) / 2;
+  //
+  //     const newDot = [x, y];
+  //
+  //     newDots.push(newDot);
+  //
+  //     dotsCounterEl.innerHTML = String(newDots.length)
+  //
+  //     lastDot = newDot;
+  //
+  //     drawDot(x, y);
+  //   }
+  // }
+  //
+  // function handleDrawNewDotBtn(event) {
+  //   event.preventDefault()
+  //
+  //   if (!isDrawing) {
+  //     isDrawing = true
+  //
+  //     drawNewDotInterval = setInterval(() => {
+  //       drawNewDot()
+  //     }, 1000 / 60)
+  //   } else {
+  //     isDrawing = false
+  //
+  //     clearInterval(drawNewDotInterval)
+  //   }
+  // }
+  //
+  // const dotsKeys = Object.keys(dots)
+  //
+  // dotsKeys.forEach((key) => {
+  //   drawDot(dots[key][0], dots[key][1], key)
+  // })
+  //
+  // dotsKeys.forEach((key, i) => {
+  //   if (i === 0) {
+  //     drawLineBetweenDots(key, dotsKeys[dotsKeys.length - 1])
+  //   } else {
+  //     drawLineBetweenDots(key, dotsKeys[i - 1])
+  //   }
+  // })
+  //
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   drawNewDotBtn.addEventListener('click', handleDrawNewDotBtn)
+  // })
 </script>
 </body>
 </html>

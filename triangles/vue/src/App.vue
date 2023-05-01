@@ -191,11 +191,7 @@ export default defineComponent({
 
 .main-content {
   display: grid;
-  height: calc(100vh - 120px);
-
-  @include mobile {
-    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px);
-  }
+  height: calc(var(--app-height) - 120px);
 }
 
 .header-button {

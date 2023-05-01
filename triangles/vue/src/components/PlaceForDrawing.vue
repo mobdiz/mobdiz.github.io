@@ -63,8 +63,8 @@ export default defineComponent({
 
 .place {
   border: 2px solid black;
-  width: calc(100vh - 120px - 2rem);
-  height: calc(100vh - 120px - 2rem);
+  width: calc(var(--app-height) - 120px - 2rem);
+  height: calc(var(--app-height) - 120px - 2rem);
   margin: 1rem auto;
 
   @include mobile {

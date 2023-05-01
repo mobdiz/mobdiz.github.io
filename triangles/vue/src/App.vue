@@ -139,6 +139,10 @@ export default defineComponent({
   height: 100vh;
 
   --box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+
+  @include mobile {
+    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
 }
 
 .aside {

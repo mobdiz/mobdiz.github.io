@@ -25,6 +25,7 @@ export const $isDrawing = drawingInterval.isRunning;
 export const addRandomDotFx = trianglesDomain.createEffect(getDotsWithNew);
 
 sample({
+  clock: addRandomDot,
   source: {
     dots: DotsModel.$items,
     mainDots: MainDotsModel.$items,
@@ -32,7 +33,6 @@ sample({
     firstDot: DotsModel.$first,
     dotsByNumber: MainDotsModel.$byNumber,
   },
-  clock: addRandomDot,
   fn: (params) => params,
   target: addRandomDotFx,
 })
@@ -43,15 +43,15 @@ sample({
 })
 
 guard({
-  source: [DotsModel.$items, $limit],
   clock: drawingInterval.tick,
+  source: [DotsModel.$items, $limit],
   filter: ([dots, limit]) => dots.length < limit,
   target: addRandomDot,
 })
 
 guard({
-  source: $limit,
   clock: addRandomDotFx.doneData,
+  source: $limit,
   filter: (limit, dots) => dots.length >= limit,
   target: stopInterval,
 })

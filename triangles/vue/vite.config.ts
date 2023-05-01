@@ -21,14 +21,13 @@ export default defineConfig({
         manualChunks: {
           'element-plus': ['element-plus'],
           'effector': ['effector'],
-          'effector-vue': ['effector-vue'],
+          'effector-vue-composition': ['effector-vue/composition'],
+          'effector-storage': ['effector-storage'],
           'patronum': ['patronum'],
-          'element-plus-icons-vue': ['@element-plus/icons-vue'],
           'vueuse-core': ['@vueuse/core'],
           'vue': ['vue'],
           'lodash-es': ['lodash-es'],
           'async-validator': ['async-validator'],
-          'dayjs': ['dayjs'],
           'ctrl': ['@ctrl/tinycolor'],
         }
       }

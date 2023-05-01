@@ -77,23 +77,21 @@ export default defineComponent({
 
 @keyframes circles {
   0% {
-    transform: scale(0);
-  }
-
-  70% {
-    transform: scale(1.1);
+    transform: scale(10);
+    opacity: 0;
   }
 
   100% {
     transform: scale(1);
+    opacity: 1;
   }
 }
 
 :deep {
   .dot-in-svg-circle {
     &--without-name {
-      transform-origin: center;
-      animation: circles 500ms ease-in-out;
+      transform-origin: right bottom;
+      animation: circles 1000ms ease-in-out;
     }
   }
 

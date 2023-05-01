@@ -24,7 +24,7 @@
       <el-header class="header">
         <el-button
           v-if="isMobile"
-          type="text"
+          link
           size="large"
           class="header-button settings-button"
           @click="isShowedDrawer = !isShowedDrawer"
@@ -38,7 +38,7 @@
 
         <el-button
           v-if="isMobile"
-          type="text"
+          link
           size="large"
           class="header-button toggle-button"
           @click="handleClickToggleButton"
@@ -195,9 +195,11 @@ export default defineComponent({
 }
 
 .header-button {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  height: 100%;
+  &.el-button.is-link {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 100%;
+  }
 }
 
 .toggle-button {

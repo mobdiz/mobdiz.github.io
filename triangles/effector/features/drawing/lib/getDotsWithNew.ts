@@ -13,8 +13,6 @@ export interface GetNewDotsWithNewParams {
 }
 
 export function getDotsWithNew(params: GetNewDotsWithNewParams): Dot[] {
-  console.log('getDotsWithNew', params)
-
   const dots = [...params.dots]
   const mainDots = [...params.mainDots]
   const dotsByNumber = new Map(params.dotsByNumber)

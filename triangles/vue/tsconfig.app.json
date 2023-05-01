@@ -1,7 +1,10 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "../"],
-  "exclude": ["src/**/__tests__/*"],
+  "exclude": [
+    "src/**/__tests__/*",
+    "cypress/**/*.cy.ts",
+  ],
   "compilerOptions": {
     "rootDir": "../",
     "composite": true,

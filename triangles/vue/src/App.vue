@@ -1,6 +1,6 @@
 <template>
   <el-container class="layout">
-    <el-aside class="aside" :width="asideWidthInPx">
+    <el-aside class="aside" :width="asideWidthInPx" v-if="!isMobile">
       <el-scrollbar>
         <div class="aside-title">
           <h2>Settings</h2>
@@ -10,9 +10,31 @@
       </el-scrollbar>
     </el-aside>
 
+    <el-drawer
+      v-model="isShowedDrawer"
+      direction="ltr"
+      title="Settings"
+      class="drawer"
+    >
+      <DotsSettings />
+    </el-drawer>
+
+
     <el-container class="content">
       <el-header class="header">
-        <h1>Dots: {{ dots.length }}</h1>
+        <el-button
+          v-if="isMobile"
+          type="primary"
+          size="small"
+          class="settings-button"
+          @click="isShowedDrawer = !isShowedDrawer"
+        >
+          Settings
+        </el-button>
+
+        <el-text tag="h1">
+          Dots: {{ dots.length }}
+        </el-text>
       </el-header>
 
       <el-main class="main">
@@ -24,42 +46,52 @@
       </el-main>
 
       <el-footer class="footer">
-        &copy; 2021
+        <el-text>&copy; <el-link href="http://mobdiz.ru/">MobDiz</el-link> (Oleg Kazannikov)</el-text>
       </el-footer>
     </el-container>
   </el-container>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import {useStore} from "@nanostores/vue";
+import {defineAsyncComponent, defineComponent, ref} from "vue";
+import {useStore} from "effector-vue/composition";
 
-import {$dots} from "../../nanostores";
+import {useDevice} from "@/utils/useDevice";
 
-import PlaceForDrawing from "@/components/PlaceForDrawing.vue";
-import DotsSettings from "@/components/DotsSettings.vue";
+import {DotsModel} from "../../effector/entities/dots";
 
 export default defineComponent({
   components: {
-    DotsSettings,
-    PlaceForDrawing
+    DotsSettings: defineAsyncComponent(() => import('@/components/DotsSettings.vue')),
+    PlaceForDrawing: defineAsyncComponent(() => import('@/components/PlaceForDrawing.vue'))
   },
 
   setup() {
-    const dots = useStore($dots)
+    const {isMobile} = useDevice()
+
+    const dots = useStore(DotsModel.$items)
     const asideWidth = 300
 
     const asideWidthInPx = `${asideWidth}px`
 
+    const isShowedDrawer = ref(false)
+
     return {
+      isMobile,
+
+      isShowedDrawer,
+
       dots,
+      asideWidth,
       asideWidthInPx
     }
   }
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@use "@/assets/mixins.scss" as *;
+
 .layout {
   height: 100vh;
 
@@ -101,8 +133,15 @@ export default defineComponent({
   height: calc(100vh - 120px);
 }
 
+.settings-button {
+  margin-right: 1em;
+}
+
+:deep(.el-drawer) {
+  width: 100% !important;
+}
+
 h1 {
   margin: 0;
-  font: inherit;
 }
 </style>

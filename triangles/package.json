@@ -2,14 +2,15 @@
   "name": "triangles",
   "version": "1.0.0",
   "description": "",
-  "main": "effector/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mobdiz (Oleg Kazannikov)",
   "license": "ISC",
   "dependencies": {
-    "nanostores": "^0.8.1",
-    "normalize.css": "^8.0.1"
+    "effector": "^22.8.2",
+    "effector-storage": "^5.0.1",
+    "normalize.css": "^8.0.1",
+    "patronum": "^1.17.0"
   }
 }

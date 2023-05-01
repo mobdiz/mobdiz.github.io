@@ -1,23 +1,9 @@
 <template>
   <svg viewBox="0 0 1000 1000" class="place">
     <g>
-      <template v-if="zeroDot">
-        <circle :cx="zeroDot.x" :cy="zeroDot.y" :r="radius"/>
-
-        <text :x="zeroDot.x + 4" :y="zeroDot.y + 16" font-size="16" fill="gray">
-          {{ zeroDot.name }}
-        </text>
-      </template>
-
-      <template v-for="dot in mainDots" :key="`dot-${dot.x}-${dot.y}`">
-        <circle :cx="dot.x" :cy="dot.y" :r="radius"/>
-
-        <text :x="dot.x + 4" :y="dot.y + 16" font-size="16" fill="gray">
-          {{ dot.name }}
-        </text>
-      </template>
-
-      <circle v-for="dot in dots" :cx="dot.x" :cy="dot.y" :r="radius" :key="`dot-${dot.x}-${dot.y}`"/>
+      <DotInSvg v-for="dot in additionalDots" :key="`dot-${dot.x}-${dot.y}`" :name="dot.name" :x="dot.x" :y="dot.y"/>
+      <DotInSvg v-for="dot in mainDots" :key="`dot-${dot.x}-${dot.y}`" :name="dot.name" :x="dot.x" :y="dot.y"/>
+      <DotInSvg v-for="dot in dots" :key="`dot-${dot.x}-${dot.y}`" :x="dot.x" :y="dot.y"/>
 
       <line
         v-for="line in lines"
@@ -27,38 +13,42 @@
         :y1="line.from.y"
         :y2="line.to.y"
         stroke="black"
-        stroke-width="1"
+        stroke-width="3"
       />
     </g>
   </svg>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import {useStore} from '@nanostores/vue';
+import {defineAsyncComponent, defineComponent, onMounted} from "vue";
+import {useStore} from 'effector-vue/composition'
 
-import {$dots, $lines, $mainDots} from '../../../nanostores/'
-
-import type {MainDot} from "../../../models";
+import {DotsModel} from '../../../effector/entities/dots'
+import {MainDotsModel} from '../../../effector/entities/main-dots'
+import {DrawingModel} from '../../../effector/features/drawing'
 
 export default defineComponent({
   name: 'PlaceForDrawing',
 
+  components: {
+    DotInSvg: defineAsyncComponent(() => import('@/components/DotInSvg.vue'))
+  },
+
   setup() {
     const radius = 3;
 
-    const zeroDot: MainDot = {
-      name: 'O',
-      x: 0,
-      y: 0,
-    };
+    const additionalDots = useStore(DotsModel.$additionalItems)
 
-    const mainDots = useStore($mainDots)
-    const lines = useStore($lines)
-    const dots = useStore($dots)
+    const mainDots = useStore(MainDotsModel.$items)
+    const lines = useStore(DrawingModel.$lines)
+    const dots = useStore(DotsModel.$items)
+
+    onMounted(() => {
+      MainDotsModel.loadItems()
+    })
 
     return {
-      zeroDot,
+      additionalDots,
       radius,
       mainDots,
       lines,
@@ -68,11 +58,29 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .place {
-  border: 1px solid black;
+  border: 2px solid black;
   width: calc(100vmin - 120px - 2rem);
   height: calc(100vmin - 120px - 2rem);
   margin: 1rem auto;
+}
+
+:deep {
+  .dot-in-svg {
+    transform: translate(5px, -5px);
+
+    &--0-0 {
+      transform: translate(3px, 15px);
+    }
+
+    &--1000-0 {
+      transform: translate(-40px, 15px);
+    }
+
+    &--0-1000 {
+      transform: translate(3px, -5px);
+    }
+  }
 }
 </style>

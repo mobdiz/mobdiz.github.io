@@ -19,13 +19,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'element-plus': ['element-plus'],
           'effector': ['effector'],
           'effector-vue-composition': ['effector-vue/composition'],
           'effector-storage': ['effector-storage'],
           'patronum': ['patronum'],
           'vueuse-core': ['@vueuse/core'],
-          'vue': ['vue'],
           'lodash-es': ['lodash-es'],
           'async-validator': ['async-validator'],
           'ctrl': ['@ctrl/tinycolor'],

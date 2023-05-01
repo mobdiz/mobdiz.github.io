@@ -1,4 +1,4 @@
-import {sample} from "effector";
+import {guard, sample} from "effector";
 import {interval} from "patronum";
 
 import {DotsModel} from '../../../entities/dots';
@@ -13,10 +13,12 @@ export const startInterval = trianglesDomain.createEvent();
 export const stopInterval = trianglesDomain.createEvent();
 
 const drawingInterval = interval({
-  timeout: 1000 / 60,
+  timeout: 1000 / 600,
   start: startInterval,
   stop: stopInterval,
 })
+
+export const $limit = trianglesDomain.createStore(10000);
 
 export const $isDrawing = drawingInterval.isRunning;
 
@@ -40,7 +42,16 @@ sample({
   target: DotsModel.$items,
 })
 
-sample({
+guard({
+  source: [DotsModel.$items, $limit],
   clock: drawingInterval.tick,
+  filter: ([dots, limit]) => dots.length < limit,
   target: addRandomDot,
+})
+
+guard({
+  source: $limit,
+  clock: addRandomDotFx.doneData,
+  filter: (limit, dots) => dots.length >= limit,
+  target: stopInterval,
 })

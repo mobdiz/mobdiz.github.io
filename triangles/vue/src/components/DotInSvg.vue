@@ -36,7 +36,7 @@ export default defineComponent({
   },
 
   setup() {
-    const radius = 3;
+    const radius = 2;
 
     return {
       radius,

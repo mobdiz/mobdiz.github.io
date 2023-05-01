@@ -2,7 +2,7 @@
   <svg viewBox="0 0 1000 1000" class="place">
     <g>
       <DotInSvg v-for="dot in additionalDots" :key="`dot-${dot.x}-${dot.y}`" :name="dot.name" :x="dot.x" :y="dot.y"/>
-      <DotInSvg v-for="dot in mainDots" :key="`dot-${dot.x}-${dot.y}`" :name="dot.name" :x="dot.x" :y="dot.y"/>
+      <DotInSvg v-for="dot in mainDots" :key="`dot-${dot.name}`" :name="dot.name" :x="dot.x" :y="dot.y"/>
       <DotInSvg v-for="dot in dots" :key="`dot-${dot.x}-${dot.y}`" :x="dot.x" :y="dot.y"/>
 
       <line

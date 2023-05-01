@@ -33,7 +33,7 @@
         </el-button>
 
         <el-text tag="h1">
-          Dots: {{ dots.length }}
+          Dots: {{ dots.length }}. Limit: {{ limit }}
         </el-text>
       </el-header>
 
@@ -59,6 +59,7 @@ import {useStore} from "effector-vue/composition";
 import {useDevice} from "@/utils/useDevice";
 
 import {DotsModel} from "../../effector/entities/dots";
+import {DrawingModel} from "../../effector/features/drawing";
 
 export default defineComponent({
   components: {
@@ -70,6 +71,8 @@ export default defineComponent({
     const {isMobile} = useDevice()
 
     const dots = useStore(DotsModel.$items)
+    const limit = useStore(DrawingModel.$limit);
+
     const asideWidth = 300
 
     const asideWidthInPx = `${asideWidth}px`
@@ -82,6 +85,8 @@ export default defineComponent({
       isShowedDrawer,
 
       dots,
+      limit,
+
       asideWidth,
       asideWidthInPx
     }

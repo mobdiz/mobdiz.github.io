@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import {defineAsyncComponent, defineComponent, ref, watch} from "vue";
+import {defineAsyncComponent, defineComponent, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useStore} from "effector-vue/composition";
 import {Setting, VideoPause, VideoPlay} from "@element-plus/icons-vue";
 
@@ -98,11 +98,25 @@ export default defineComponent({
 
     const isShowedDrawer = ref(false)
 
+    onMounted(() => {
+      window.addEventListener('resize', setAppHeight)
+
+      setAppHeight()
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', setAppHeight)
+    })
+
     watch(isDrawing, (value) => {
       if (value) {
         isShowedDrawer.value = false
       }
     })
+
+    function setAppHeight() {
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
+    }
 
     function handleClickToggleButton() {
       isDrawing.value ? DrawingModel.stopInterval() : DrawingModel.startInterval()
@@ -136,13 +150,9 @@ export default defineComponent({
 @use "@/assets/mixins.scss" as *;
 
 .layout {
-  height: 100vh;
+  height: var(--app-height);
 
   --box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-
-  @include mobile {
-    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  }
 }
 
 .aside {

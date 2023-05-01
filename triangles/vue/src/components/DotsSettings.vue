@@ -109,14 +109,21 @@ export default defineComponent({
     }
 
     function handleSubmit() {
-      const items = mainDots.value.map(dot => ({...dot}))
+      const isSameDots = mainDots.value.every((dot, index) => {
+        const dotFromStore = mainDotsFromStore.value[index]
 
-      if (isDrawing.value) {
-        DrawingModel.stopInterval()
-      } else {
+        return dot.x === dotFromStore.x && dot.y === dotFromStore.y
+      })
+
+      if (!isSameDots) {
+        DotsModel.reset()
+
+        const items = mainDots.value.map(dot => ({...dot}))
+
         MainDotsModel.setItems(items)
-        DrawingModel.startInterval()
       }
+
+      isDrawing.value ? DrawingModel.stopInterval() : DrawingModel.startInterval()
     }
 
     function handleClickClearButton() {

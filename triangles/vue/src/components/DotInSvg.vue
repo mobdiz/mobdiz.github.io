@@ -1,17 +1,25 @@
 <template>
   <g>
-    <circle :cx="x" :cy="y" :r="radius"/>
+    <circle :cx="x" :cy="y" :r="radius" class="dot-in-svg-circle" :class="{'dot-in-svg-circle--without-name': !name}"/>
 
-    <text :x="x" :y="y" font-size="16" fill="black" v-if="name" class="dot-in-svg" :class="`dot-in-svg--${x}-${y}`" font-weight="bold">
+    <text
+      v-if="name"
+      :class="`dot-in-svg-text--${x}-${y}`"
+      :font-size="fontSize"
+      :x="x"
+      :y="y"
+      class="dot-in-svg-text"
+    >
       {{ name }}
     </text>
   </g>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
 
-import type { DotsModel } from "../../../effector/entities/dots";
+import type {DotsModel} from "../../../effector/entities/dots";
+import {useDevice} from "@/utils/useDevice";
 
 type Dot = DotsModel.Dot
 
@@ -36,10 +44,15 @@ export default defineComponent({
   },
 
   setup() {
+    const {isMobile} = useDevice();
+
     const radius = 2;
+
+    const fontSize = computed(() => isMobile.value ? 32 : 16)
 
     return {
       radius,
+      fontSize,
     }
   },
 })

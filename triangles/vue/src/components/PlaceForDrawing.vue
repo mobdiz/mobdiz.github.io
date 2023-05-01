@@ -59,11 +59,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@use "@/assets/mixins.scss" as *;
+
 .place {
   border: 2px solid black;
-  width: calc(100vmin - 120px - 2rem);
-  height: calc(100vmin - 120px - 2rem);
+  width: calc(100vh - 120px - 2rem);
+  height: calc(100vh - 120px - 2rem);
   margin: 1rem auto;
+
+  @include mobile {
+    @media (orientation: portrait) {
+      width: calc(100vw - 2rem);
+      height: calc(100vw - 2rem);
+    }
+  }
 }
 
 :deep {

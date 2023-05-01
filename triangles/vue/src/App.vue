@@ -6,7 +6,7 @@
           <h2>Settings</h2>
         </div>
 
-        <DotsSettings />
+        <DotsSettings @reset="handleResetSettings" />
       </el-scrollbar>
     </el-aside>
 
@@ -16,7 +16,7 @@
       title="Settings"
       class="drawer"
     >
-      <DotsSettings />
+      <DotsSettings @reset="handleResetSettings" />
     </el-drawer>
 
 
@@ -24,17 +24,30 @@
       <el-header class="header">
         <el-button
           v-if="isMobile"
-          type="primary"
-          size="small"
-          class="settings-button"
+          type="text"
+          size="large"
+          class="header-button settings-button"
           @click="isShowedDrawer = !isShowedDrawer"
         >
-          Settings
+          <el-icon size="24"><Setting /></el-icon>
         </el-button>
 
         <el-text tag="h1">
           Dots: {{ dots.length }}. Limit: {{ limit }}
         </el-text>
+
+        <el-button
+          v-if="isMobile"
+          type="text"
+          size="large"
+          class="header-button toggle-button"
+          @click="handleClickToggleButton"
+        >
+          <el-icon size="24">
+            <VideoPause v-if="isDrawing" />
+            <VideoPlay v-else />
+          </el-icon>
+        </el-button>
       </el-header>
 
       <el-main class="main">
@@ -53,8 +66,9 @@
 </template>
 
 <script lang="ts">
-import {defineAsyncComponent, defineComponent, ref} from "vue";
+import {defineAsyncComponent, defineComponent, ref, watch} from "vue";
 import {useStore} from "effector-vue/composition";
+import {Setting, VideoPause, VideoPlay} from "@element-plus/icons-vue";
 
 import {useDevice} from "@/utils/useDevice";
 
@@ -63,6 +77,9 @@ import {DrawingModel} from "../../effector/features/drawing";
 
 export default defineComponent({
   components: {
+    VideoPause,
+    VideoPlay,
+    Setting,
     DotsSettings: defineAsyncComponent(() => import('@/components/DotsSettings.vue')),
     PlaceForDrawing: defineAsyncComponent(() => import('@/components/PlaceForDrawing.vue'))
   },
@@ -73,11 +90,27 @@ export default defineComponent({
     const dots = useStore(DotsModel.$items)
     const limit = useStore(DrawingModel.$limit);
 
+    const isDrawing = useStore(DrawingModel.$isDrawing)
+
     const asideWidth = 300
 
     const asideWidthInPx = `${asideWidth}px`
 
     const isShowedDrawer = ref(false)
+
+    watch(isDrawing, (value) => {
+      if (value) {
+        isShowedDrawer.value = false
+      }
+    })
+
+    function handleClickToggleButton() {
+      isDrawing.value ? DrawingModel.stopInterval() : DrawingModel.startInterval()
+    }
+
+    function handleResetSettings() {
+      isShowedDrawer.value = false
+    }
 
     return {
       isMobile,
@@ -88,7 +121,12 @@ export default defineComponent({
       limit,
 
       asideWidth,
-      asideWidthInPx
+      asideWidthInPx,
+
+      isDrawing,
+
+      handleClickToggleButton,
+      handleResetSettings,
     }
   }
 })
@@ -118,6 +156,10 @@ export default defineComponent({
   box-shadow: var(--box-shadow);
   display: flex;
   align-items: center;
+
+  @include mobile {
+    padding: 0;
+  }
 }
 
 .footer {
@@ -142,8 +184,14 @@ export default defineComponent({
   }
 }
 
-.settings-button {
-  margin-right: 1em;
+.header-button {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 100%;
+}
+
+.toggle-button {
+  margin-left: auto;
 }
 
 :deep(.el-drawer) {

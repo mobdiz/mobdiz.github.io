@@ -59,7 +59,12 @@ import {DrawingModel} from "../../../effector/features/drawing";
 export default defineComponent({
   name: 'DotsSettings',
 
-  setup() {
+  // Описать emit reset c типами аргументов
+  emits: {
+    reset: () => true
+  },
+
+  setup(_, {emit}) {
     const isDrawing = useStore(DrawingModel.$isDrawing)
 
     const mainDotsFromStore = useStore(MainDotsModel.$items)
@@ -117,6 +122,8 @@ export default defineComponent({
     function handleClickClearButton() {
       DrawingModel.stopInterval()
       DotsModel.reset()
+
+      emit('reset');
     }
 
     return {

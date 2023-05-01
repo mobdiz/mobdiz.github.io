@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
-    "@nanostores/vue": "^0.7.0",
     "effector": "^22.8.2",
     "effector-vue": "^22.2.0",
     "element-plus": "^2.3.4",
